@@ -141,7 +141,7 @@ function changeUser(){
     usuarioCorrente.senha = idSenha;
     usuarioCorrente.senha2 = idSenha2;
 
-    localStorage.setItem ('usuarioCorrente', JSON.stringify (usuarioCorrente));
+    sessionStorage.setItem ('usuarioCorrente', JSON.stringify (usuarioCorrente));
 
     alert ('Usuario alterado com sucesso.');
     window.location.href = "index.html";
