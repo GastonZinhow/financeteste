@@ -1,6 +1,6 @@
 // Página inicial de Login
 const LOGIN_URL = "pages/login.html";
-const apiUrl = '/usuarios';
+const apiUrl = 'http://localhost:3000/usuarios';
 
 // Objeto para o banco de dados de usuários baseado em JSON
 var db_usuarios = {};
