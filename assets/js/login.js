@@ -53,6 +53,11 @@ function initLoginApp () {
             console.error('Erro ao ler usuários via API JSONServer:', error);
             displayMessage("Erro ao ler usuários");
         });
+        document.getElementById('txt_login').value = usuarioCorrente.login;
+        document.getElementById('txt_nome').value = usuarioCorrente.nome;
+        document.getElementById('txt_email').value = usuarioCorrente.email;
+        document.getElementById('txt_senha').value = usuarioCorrente.senha;
+        document.getElementById('txt_senha2').value = usuarioCorrente.senha;
 };
 
 
@@ -82,6 +87,7 @@ function loginUser (login, senha) {
     // Se chegou até aqui é por que não encontrou o usuário e retorna falso
     return false;
 }
+
 
 // Apaga os dados do usuário corrente no sessionStorage
 function logoutUser () {
@@ -114,6 +120,33 @@ function addUser (nome, login, senha, email) {
             console.error('Erro ao inserir usuário via API JSONServer:', error);
             displayMessage("Erro ao inserir usuário");
         });
+}
+
+function changeUser(){
+
+    let idLogin  = document.getElementById('txt_login').value;
+    let idNome   = document.getElementById('txt_nome').value;
+    let idEmail  = document.getElementById('txt_email').value;
+    let idSenha  = document.getElementById('txt_senha').value;
+    let idSenha2 = document.getElementById('txt_senha2').value;
+    
+    if (idSenha != idSenha2) {
+        alert ('As senhas informadas não conferem.');
+        return
+    }
+
+    console.log(usuarioCorrente);
+
+    usuarioCorrente.login = idLogin;
+    usuarioCorrente.nome = idNome;
+    usuarioCorrente.email = idEmail;
+    usuarioCorrente.senha = idSenha;
+    usuarioCorrente.senha2 = idSenha2;
+
+    sessionStorage.setItem ('usuarioCorrente', JSON.stringify (usuarioCorrente));
+
+    alert ('Usuario alterado com sucesso.');
+    window.location.href = "index.html";
 }
 
 // Inicializa as estruturas utilizadas pelo LoginApp
