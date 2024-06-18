@@ -73,8 +73,9 @@ function loginUser (login, senha) {
         if (login == usuario.login && senha == usuario.senha) {
             usuarioCorrente.id = usuario.id;
             usuarioCorrente.login = usuario.login;
-            usuarioCorrente.email = usuario.email;
+            usuarioCorrente.senha = usuario.senha;
             usuarioCorrente.nome = usuario.nome;
+            usuarioCorrente.email = usuario.email;  
 
             // Salva os dados do usuário corrente no Session Storage, mas antes converte para string
             sessionStorage.setItem ('usuarioCorrente', JSON.stringify (usuarioCorrente));
@@ -122,33 +123,66 @@ function addUser (nome, login, senha, email) {
         });
 }
 
-function changeUser(){
 
-    let idLogin  = document.getElementById('txt_login').value;
-    let idNome   = document.getElementById('txt_nome').value;
-    let idEmail  = document.getElementById('txt_email').value;
-    let idSenha  = document.getElementById('txt_senha').value;
-    let idSenha2 = document.getElementById('txt_senha2').value;
-    
-    if (idSenha != idSenha2) {
-        alert ('As senhas informadas não conferem.');
-        return
+function changeUser(id, usuarioCorrente, refreshFunction) {
+    // Retrieve the current user from sessionStorage if available
+    let usuarioCorrenteJSON = sessionStorage.getItem('usuarioCorrente');
+    if (usuarioCorrenteJSON) {
+        usuarioCorrente = JSON.parse(usuarioCorrenteJSON);
     }
 
-    console.log(usuarioCorrente);
+    // Ensure we have a valid usuarioCorrente and id
+    if (!usuarioCorrente || !usuarioCorrente.id) {
+        console.error('Invalid usuarioCorrente object:', usuarioCorrente);
+        alert("Erro ao atualizar usuario: Usuario Corrente inválido");
+        return;
+    }
 
-    usuarioCorrente.login = idLogin;
-    usuarioCorrente.nome = idNome;
-    usuarioCorrente.email = idEmail;
-    usuarioCorrente.senha = idSenha;
-    usuarioCorrente.senha2 = idSenha2;
+    // Use id from the usuarioCorrente object
+    id = usuarioCorrente.id;
 
-    sessionStorage.setItem ('usuarioCorrente', JSON.stringify (usuarioCorrente));
+    // Debugging logs
+    console.log('ID:', id);
+    console.log('Usuario Corrente:', usuarioCorrente);
+    console.log('Refresh Function:', refreshFunction);
 
-    alert ('Usuario alterado com sucesso.');
-    window.location.href = "index.html";
+    // Perform the fetch request to update the user
+    fetch(`${apiUrl}/${id}`, {
+        method: 'PATCH',  // Corrected method type (removed extra space)
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(usuarioCorrente),
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(`HTTP error! status: ${response.status}, message: ${text}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('API Response:', data);
+        alert("Usuario alterado com sucesso");
+        if (refreshFunction && typeof refreshFunction === 'function') {
+            refreshFunction();
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao atualizar usuario via API JSONServer:', error);
+        alert("Erro ao atualizar usuario: " + error.message);
+    });
 }
 
+usuarioCorrenteJSON = sessionStorage.getItem('usuarioCorrente');
+    if (usuarioCorrenteJSON) {
+        usuarioCorrente = JSON.parse (usuarioCorrenteJSON);
+    }
+id = usuarioCorrente.id;
+console.log('ID:', usuarioCorrente.id);
+console.log('Usuario Corrente:', usuarioCorrente);
 // Inicializa as estruturas utilizadas pelo LoginApp
 initLoginApp ();
 
